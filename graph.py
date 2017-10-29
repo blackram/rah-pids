@@ -59,7 +59,7 @@ for s in series:
 
     for label in ax.get_xticklabels():
         label.set_fontname('Arial')
-    label.set_fontsize(8)
+        label.set_fontsize(8)
 
     plt.xlabel('Hour')
     plt.ylabel('Visible Tickets')
