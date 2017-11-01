@@ -4,13 +4,46 @@ import json
 import re
 import os
 from datetime import datetime, timedelta
+#from dateutil.parser import parse
 from pathlib import Path
+from tzlocal import get_localzone
+import iso8601
 
 FILENAME = 'pid_process_history.json'
 
-def match_visible_tickets(cache):
+# A global representing the current time zone
+TZ = get_localzone()
+
+def match_each_visible_ticket(instance, ticket):
+    """A ticket filter"""
+
+    # tickets must have a location
+    if ticket["Location"] == "":
+        return False
+
+   # this is experimental - to return all tickets regardless of status, uncomment the following line
+    return True
+
+    # all non-notified tickets qualify at this point
+    if ticket["Status"] != "Notified":
+        return True
+
+    # return true where the notification status is less than one (1) hour    
+    iso_dt = iso8601.parse_date(ticket["StatusTime"])
+    #now_dt = TZ.localize(datetime.now())
+    now_dt = TZ.localize(instance)
+
+    if now_dt - iso_dt > timedelta(hours=1):
+        return False
+    else:
+        return True
+
+def match_visible_tickets(instance, cache):
     """A filter so that only tickets that would be visible are returned"""
-    return list(filter(lambda x: x["Location"] != '', cache))
+
+    ticket_filter = lambda ticket: match_each_visible_ticket(instance, ticket)
+
+    return list(filter(ticket_filter, cache))
 
 def extract_tickets(file: str, callback):
     """A method to extract tickets from a pid log"""
@@ -38,7 +71,7 @@ def extract_tickets(file: str, callback):
                 callback(i,
                          instance=instance,
                          pid=match.group(2),
-                         tickets=len(match_visible_tickets(cache)))
+                         tickets=len(match_visible_tickets(instance, cache)))
 
 def print_tickets(index, instance, pid, tickets):
     """A method that prints passed tickets"""
@@ -96,7 +129,7 @@ def should_process(log_path: str, last_modified: datetime.date):
         else:
             return False
 
-def process_logs(log_path_factory, processor, value='2017-10-25'):
+def process_logs(log_path_factory, processor, value='2017-10-31'):
     """process all dated logs"""
     work_date = parse_date(value).date()
     now = datetime.now().date()
@@ -135,7 +168,7 @@ def process_logs(log_path_factory, processor, value='2017-10-25'):
 
 
 def extract_writer(file_handle, instance, tickets):
-    """Write the instance and number of tickets to the matching pid file. W"""
+    """Write the instance and number of tickets to the matching pid file."""
 
     file_handle.write(f"{instance}, {tickets}\n")
 
