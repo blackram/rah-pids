@@ -74,4 +74,4 @@ def plot(pids, styles, work_date="2017-10-25"):
     plt.subplots_adjust(hspace=0.6, wspace=0.25)
     plt.show()
 
-plot(pids, styles=[], work_date="2017-10-30")
+plot(pids, styles=[], work_date="2017-11-02")
