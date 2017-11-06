@@ -2,6 +2,7 @@
 import pandas
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+from datetime import datetime
 
 pids = ["PID-Public",
         "PID-3C-Medical-Day-And-Pathology",
@@ -74,4 +75,5 @@ def plot(pids, styles, work_date="2017-10-25"):
     plt.subplots_adjust(hspace=0.6, wspace=0.25)
     plt.show()
 
-plot(pids, styles=[], work_date="2017-11-02")
+graph_date = datetime.now().date().strftime("%Y-%m-%d")
+plot(pids, styles=[], work_date=graph_date)

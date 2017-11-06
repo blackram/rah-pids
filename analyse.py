@@ -41,4 +41,5 @@ def analyse_extracts(log_path_factory, value='2017-10-25'):
 
     print(results)
 
-analyse_extracts(lambda pid, work_date: f'extracts\{pid}_{work_date}.dat', '2017-10-25')
+min_date = '2017-10-25'
+analyse_extracts(lambda pid, work_date: f'extracts\{pid}_{work_date}.dat', min_date)

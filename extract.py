@@ -33,7 +33,7 @@ def match_each_visible_ticket(instance, ticket):
     #now_dt = TZ.localize(datetime.now())
     now_dt = TZ.localize(instance)
 
-    if now_dt - iso_dt > timedelta(hours=1):
+    if now_dt - iso_dt > timedelta(hours=2):
         return False
     else:
         return True
@@ -203,5 +203,8 @@ def log_processor(log_file: str, work_date: datetime.date):
     for file_handle_key in file_handles:
         file_handles[file_handle_key].close()
 
+
+
+min_date = '2017-10-25'
 process_logs(lambda work_date: f'\\\\hlt667a032\\e$\\PQWMS\\logs\\{work_date}\\Pid.log',
-             log_processor, '2017-10-25')
+             log_processor, min_date)
